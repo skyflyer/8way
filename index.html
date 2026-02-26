@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8-Way Formations - Coaching Reference</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #e0e0e0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            min-width: 300px;
+            background: #16213e;
+            border-right: 1px solid #0f3460;
+            overflow-y: auto;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px 16px;
+            background: #0f3460;
+            border-bottom: 1px solid #1a1a5e;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.3rem;
+            color: #e94560;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-header p {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .nav-section {
+            padding: 8px 0;
+        }
+
+        .nav-section-title {
+            padding: 10px 16px 6px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #e94560;
+            font-weight: 700;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background 0.15s;
+            border-left: 3px solid transparent;
+            font-size: 0.85rem;
+        }
+
+        .nav-item:hover {
+            background: #1a1a4e;
+        }
+
+        .nav-item.active {
+            background: #1a1a5e;
+            border-left-color: #e94560;
+            color: #fff;
+        }
+
+        .nav-item .page-badge {
+            display: inline-block;
+            background: #0f3460;
+            color: #888;
+            font-size: 0.65rem;
+            padding: 1px 6px;
+            border-radius: 3px;
+            margin-left: auto;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .nav-item.active .page-badge {
+            background: #e94560;
+            color: #fff;
+        }
+
+        .nav-item .figures {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .nav-item .figure-name {
+            font-size: 0.8rem;
+        }
+
+        .nav-item .figure-sub {
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        /* Main content */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .figure-display {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .figure-title {
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .figure-image-container {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .figure-image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .nav-btn {
+            background: #0f3460;
+            color: #e0e0e0;
+            border: 1px solid #1a1a5e;
+            padding: 10px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.15s;
+        }
+
+        .nav-btn:hover {
+            background: #1a1a5e;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .page-indicator {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.7rem;
+            color: #555;
+        }
+
+        kbd {
+            background: #0f3460;
+            border: 1px solid #1a1a5e;
+            border-radius: 3px;
+            padding: 1px 5px;
+            font-size: 0.7rem;
+        }
+
+        /* Mobile */
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 100;
+            background: #0f3460;
+            color: #e0e0e0;
+            border: 1px solid #1a1a5e;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -300px;
+                z-index: 50;
+                transition: left 0.3s;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 40;
+            }
+
+            .overlay.open {
+                display: block;
+            }
+
+            .main {
+                padding: 60px 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<button class="sidebar-toggle" onclick="toggleSidebar()">&#9776;</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>8-Way Formations</h1>
+        <p>Coaching Reference - Martial Ferre 2023</p>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Randoms</div>
+        <div class="nav-item" data-page="6" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">A-Cater / A "left"-Cater</span>
+            </div>
+            <span class="page-badge">6</span>
+        </div>
+        <div class="nav-item" data-page="7" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">B-Step diamond / C-Hour glass</span>
+            </div>
+            <span class="page-badge">7</span>
+        </div>
+        <div class="nav-item" data-page="8" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">D-Impossible / E-Rubick</span>
+            </div>
+            <span class="page-badge">8</span>
+        </div>
+        <div class="nav-item" data-page="9" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">E (bis)-Rubick / F-Opposit Diamond</span>
+            </div>
+            <span class="page-badge">9</span>
+        </div>
+        <div class="nav-item" data-page="10" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">F bis-Opposit Diamond / G-Arrow</span>
+            </div>
+            <span class="page-badge">10</span>
+        </div>
+        <div class="nav-item" data-page="11" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">H-Iroquois / J-Springbok</span>
+            </div>
+            <span class="page-badge">11</span>
+        </div>
+        <div class="nav-item" data-page="12" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">J "left"-Springbok / K-Double crossbow</span>
+            </div>
+            <span class="page-badge">12</span>
+        </div>
+        <div class="nav-item" data-page="13" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">L-Open facing diamond / M-Double spiders</span>
+            </div>
+            <span class="page-badge">13</span>
+        </div>
+        <div class="nav-item" data-page="14" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">N-Zipper flake / O-Compressed accord</span>
+            </div>
+            <span class="page-badge">14</span>
+        </div>
+        <div class="nav-item" data-page="15" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">P-Venus / P bis-Venus</span>
+            </div>
+            <span class="page-badge">15</span>
+        </div>
+        <div class="nav-item" data-page="16" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Q-Compass / Q bis-Compass</span>
+            </div>
+            <span class="page-badge">16</span>
+        </div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Bloc Formations (FAI 2018)</div>
+        <div class="nav-item" data-page="17" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Introduction</span>
+            </div>
+            <span class="page-badge">17</span>
+        </div>
+        <div class="nav-item" data-page="18" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 1 - Donut flake</span>
+            </div>
+            <span class="page-badge">18</span>
+        </div>
+        <div class="nav-item" data-page="19" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 1 (other versions)</span>
+            </div>
+            <span class="page-badge">19</span>
+        </div>
+        <div class="nav-item" data-page="20" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 2 - Swiss bear</span>
+            </div>
+            <span class="page-badge">20</span>
+        </div>
+        <div class="nav-item" data-page="21" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 3 - Double chinese tees</span>
+            </div>
+            <span class="page-badge">21</span>
+        </div>
+        <div class="nav-item" data-page="22" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 4 - Snow flake</span>
+            </div>
+            <span class="page-badge">22</span>
+        </div>
+        <div class="nav-item" data-page="23" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 5 - Standard 5</span>
+            </div>
+            <span class="page-badge">23</span>
+        </div>
+        <div class="nav-item" data-page="24" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 6 - Star</span>
+            </div>
+            <span class="page-badge">24</span>
+        </div>
+        <div class="nav-item" data-page="25" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 7 - Standard 7</span>
+            </div>
+            <span class="page-badge">25</span>
+        </div>
+        <div class="nav-item" data-page="26" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 8 - Frisbee</span>
+            </div>
+            <span class="page-badge">26</span>
+        </div>
+        <div class="nav-item" data-page="27" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 9 - Taj</span>
+            </div>
+            <span class="page-badge">27</span>
+        </div>
+        <div class="nav-item" data-page="28" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 10 - Donut (left hand)</span>
+            </div>
+            <span class="page-badge">28</span>
+        </div>
+        <div class="nav-item" data-page="29" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 10 - Donut (right hand)</span>
+            </div>
+            <span class="page-badge">29</span>
+        </div>
+        <div class="nav-item" data-page="30" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 11 - Norwegian box (left hand)</span>
+            </div>
+            <span class="page-badge">30</span>
+        </div>
+        <div class="nav-item" data-page="31" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 11 - Norwegian box (right hand)</span>
+            </div>
+            <span class="page-badge">31</span>
+        </div>
+        <div class="nav-item" data-page="32" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 12 - Stereo bipole</span>
+            </div>
+            <span class="page-badge">32</span>
+        </div>
+        <div class="nav-item" data-page="33" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 13 - Satellite</span>
+            </div>
+            <span class="page-badge">33</span>
+        </div>
+        <div class="nav-item" data-page="34" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 14 - Opal-Opal</span>
+            </div>
+            <span class="page-badge">34</span>
+        </div>
+        <div class="nav-item" data-page="35" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 15 / A option - Zipper</span>
+            </div>
+            <span class="page-badge">35</span>
+        </div>
+        <div class="nav-item" data-page="36" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 15 / B option - Zipper</span>
+            </div>
+            <span class="page-badge">36</span>
+        </div>
+        <div class="nav-item" data-page="37" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 16 - Double canadian T</span>
+            </div>
+            <span class="page-badge">37</span>
+        </div>
+        <div class="nav-item" data-page="38" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 17 - Buzzard (outdoor)</span>
+            </div>
+            <span class="page-badge">38</span>
+        </div>
+        <div class="nav-item" data-page="39" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 17 indoor / A option</span>
+            </div>
+            <span class="page-badge">39</span>
+        </div>
+        <div class="nav-item" data-page="40" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 17 indoor / B option</span>
+            </div>
+            <span class="page-badge">40</span>
+        </div>
+        <div class="nav-item" data-page="41" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 18 - Sidebody donut (right hand)</span>
+            </div>
+            <span class="page-badge">41</span>
+        </div>
+        <div class="nav-item" data-page="42" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 18 - Sidebody donut (mixed)</span>
+            </div>
+            <span class="page-badge">42</span>
+        </div>
+        <div class="nav-item" data-page="43" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 19 - Double diamond</span>
+            </div>
+            <span class="page-badge">43</span>
+        </div>
+        <div class="nav-item" data-page="44" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 20 - Cat diamond (outdoor)</span>
+            </div>
+            <span class="page-badge">44</span>
+        </div>
+        <div class="nav-item" data-page="45" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 20 indoor / Option A</span>
+            </div>
+            <span class="page-badge">45</span>
+        </div>
+        <div class="nav-item" data-page="46" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 20 indoor / Option B</span>
+            </div>
+            <span class="page-badge">46</span>
+        </div>
+        <div class="nav-item" data-page="47" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 21 - Free bear</span>
+            </div>
+            <span class="page-badge">47</span>
+        </div>
+        <div class="nav-item" data-page="48" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 22 - Old bone</span>
+            </div>
+            <span class="page-badge">48</span>
+        </div>
+        <div class="nav-item" data-page="49" onclick="showPage(this)">
+            <div class="figures">
+                <span class="figure-name">Bloc 22 - option 2</span>
+            </div>
+            <span class="page-badge">49</span>
+        </div>
+    </div>
+</nav>
+
+<main class="main">
+    <div class="figure-display">
+        <h2 class="figure-title" id="figureTitle">A-Cater / A "left"-Cater</h2>
+        <div class="figure-image-container">
+            <img id="figureImage" src="images/page_06.png" alt="Formation figure">
+        </div>
+        <div class="nav-controls">
+            <button class="nav-btn" id="prevBtn" onclick="navigate(-1)">&larr; Previous</button>
+            <span class="page-indicator" id="pageIndicator">Page 6 of 49</span>
+            <button class="nav-btn" id="nextBtn" onclick="navigate(1)">Next &rarr;</button>
+        </div>
+        <div class="keyboard-hint">
+            Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys or swipe to navigate
+        </div>
+    </div>
+</main>
+
+<script>
+const pages = [
+    { page: 6, title: 'A-Cater / A "left"-Cater' },
+    { page: 7, title: 'B-Step diamond / C-Hour glass' },
+    { page: 8, title: 'D-Impossible / E-Rubick' },
+    { page: 9, title: 'E (bis)-Rubick / F-Opposit Diamond' },
+    { page: 10, title: 'F bis-Opposit Diamond / G-Arrow' },
+    { page: 11, title: 'H-Iroquois / J-Springbok' },
+    { page: 12, title: 'J "left"-Springbok / K-Double crossbow' },
+    { page: 13, title: 'L-Open facing diamond / M-Double spiders' },
+    { page: 14, title: 'N-Zipper flake / O-Compressed accord' },
+    { page: 15, title: 'P-Venus / P bis-Venus' },
+    { page: 16, title: 'Q-Compass / Q bis-Compass' },
+    { page: 17, title: 'FAI 8-way Bloc Formations 2018 - Introduction' },
+    { page: 18, title: 'Bloc 1 - Donut flake' },
+    { page: 19, title: 'Bloc 1 (other versions)' },
+    { page: 20, title: 'Bloc 2 - Swiss bear' },
+    { page: 21, title: 'Bloc 3 - Double chinese tees' },
+    { page: 22, title: 'Bloc 4 - Snow flake' },
+    { page: 23, title: 'Bloc 5 - Standard 5' },
+    { page: 24, title: 'Bloc 6 - Star' },
+    { page: 25, title: 'Bloc 7 - Standard 7' },
+    { page: 26, title: 'Bloc 8 - Frisbee' },
+    { page: 27, title: 'Bloc 9 - Taj' },
+    { page: 28, title: 'Bloc 10 - Donut (left hand)' },
+    { page: 29, title: 'Bloc 10 - Donut (right hand)' },
+    { page: 30, title: 'Bloc 11 - Norwegian box (left hand)' },
+    { page: 31, title: 'Bloc 11 - Norwegian box (right hand)' },
+    { page: 32, title: 'Bloc 12 - Stereo bipole' },
+    { page: 33, title: 'Bloc 13 - Satellite' },
+    { page: 34, title: 'Bloc 14 - Opal-Opal' },
+    { page: 35, title: 'Bloc 15 / A option - Zipper' },
+    { page: 36, title: 'Bloc 15 / B option - Zipper' },
+    { page: 37, title: 'Bloc 16 - Double canadian T' },
+    { page: 38, title: 'Bloc 17 - Buzzard (outdoor)' },
+    { page: 39, title: 'Bloc 17 indoor / A option' },
+    { page: 40, title: 'Bloc 17 indoor / B option' },
+    { page: 41, title: 'Bloc 18 - Sidebody donut (right hand)' },
+    { page: 42, title: 'Bloc 18 - Sidebody donut (mixed)' },
+    { page: 43, title: 'Bloc 19 - Double diamond' },
+    { page: 44, title: 'Bloc 20 - Cat diamond (outdoor)' },
+    { page: 45, title: 'Bloc 20 indoor / Option A' },
+    { page: 46, title: 'Bloc 20 indoor / Option B' },
+    { page: 47, title: 'Bloc 21 - Free bear' },
+    { page: 48, title: 'Bloc 22 - Old bone' },
+    { page: 49, title: 'Bloc 22 - option 2' },
+];
+
+let currentIndex = 0;
+
+// Check URL hash for initial page
+function loadFromHash() {
+    const hash = window.location.hash.replace('#page-', '');
+    if (hash) {
+        const pageNum = parseInt(hash);
+        const idx = pages.findIndex(p => p.page === pageNum);
+        if (idx !== -1) {
+            currentIndex = idx;
+        }
+    }
+}
+
+function showPage(el) {
+    const pageNum = parseInt(el.dataset.page);
+    const idx = pages.findIndex(p => p.page === pageNum);
+    if (idx !== -1) {
+        currentIndex = idx;
+        updateDisplay();
+    }
+    // Close sidebar on mobile
+    if (window.innerWidth <= 768) {
+        toggleSidebar();
+    }
+}
+
+function navigate(dir) {
+    const newIndex = currentIndex + dir;
+    if (newIndex >= 0 && newIndex < pages.length) {
+        currentIndex = newIndex;
+        updateDisplay();
+    }
+}
+
+function updateDisplay() {
+    const entry = pages[currentIndex];
+    const pageStr = String(entry.page).padStart(2, '0');
+
+    document.getElementById('figureTitle').textContent = entry.title;
+    document.getElementById('figureImage').src = `images/page_${pageStr}.png`;
+    document.getElementById('pageIndicator').textContent = `Page ${entry.page} of 49`;
+    document.getElementById('prevBtn').disabled = currentIndex === 0;
+    document.getElementById('nextBtn').disabled = currentIndex === pages.length - 1;
+
+    // Update active sidebar item
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.toggle('active', parseInt(item.dataset.page) === entry.page);
+    });
+
+    // Scroll active item into view in sidebar
+    const activeItem = document.querySelector('.nav-item.active');
+    if (activeItem) {
+        activeItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    // Update URL hash
+    window.location.hash = `page-${entry.page}`;
+}
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('open');
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        navigate(-1);
+    } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        navigate(1);
+    }
+});
+
+// Touch swipe navigation
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+const mainEl = document.querySelector('.main');
+
+mainEl.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+
+mainEl.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    const dx = touchEndX - touchStartX;
+    const dy = touchEndY - touchStartY;
+    // Only trigger if horizontal swipe is dominant and long enough
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        if (dx < 0) {
+            navigate(1);  // swipe left = next
+        } else {
+            navigate(-1); // swipe right = previous
+        }
+    }
+}, { passive: true });
+
+// Initialize
+loadFromHash();
+updateDisplay();
+</script>
+
+</body>
+</html>
