@@ -547,7 +547,7 @@
             <button class="nav-btn" id="nextBtn" onclick="navigate(1)">Next &rarr;</button>
         </div>
         <div class="keyboard-hint">
-            Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys or swipe to navigate
+            Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrow keys or click image halves to navigate
         </div>
     </div>
 </main>
@@ -676,33 +676,15 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Touch swipe navigation
-let touchStartX = 0;
-let touchStartY = 0;
-let touchEndX = 0;
-let touchEndY = 0;
+// Image click navigation
+const figureImageEl = document.getElementById('figureImage');
 
-const mainEl = document.querySelector('.main');
-
-mainEl.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartY = e.changedTouches[0].screenY;
-}, { passive: true });
-
-mainEl.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    touchEndY = e.changedTouches[0].screenY;
-    const dx = touchEndX - touchStartX;
-    const dy = touchEndY - touchStartY;
-    // Only trigger if horizontal swipe is dominant and long enough
-    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-        if (dx < 0) {
-            navigate(1);  // swipe left = next
-        } else {
-            navigate(-1); // swipe right = previous
-        }
-    }
-}, { passive: true });
+figureImageEl.addEventListener('click', (e) => {
+    const rect = figureImageEl.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const isRightHalf = clickX >= rect.width / 2;
+    navigate(isRightHalf ? 1 : -1);
+});
 
 // Initialize
 loadFromHash();
